@@ -24,21 +24,23 @@ module BootstrapComponentsHelpers
         @pane_contents = []
       end
 
+      # options[:header_class] - class for header's <li>
       def pane title, options = {}, &block
         css_class = options[:active] ? 'active' : ''
         link = content_tag(:a, title, :'data-toggle' => 'tab', :href => "##{title.parameterize}_tab")
-        @pane_handles << [link, css_class]
+        header_class = [css_class.presence, options[:header_class]].compact.join(' ')
+        @pane_handles << [link, header_class]
         @pane_contents << [css_class, title, capture(&block)]
         nil
       end
-      
+
       def pane_handles_html
         pane_handles.first[1] = 'active' unless pane_handles.detect {|ph| ph[1] == 'active'}
         pane_handles.map do |link, css_class|
           content_tag(:li, link, :class => css_class)
         end.join("\n").html_safe
       end
-      
+
       def pane_contents_html
         pane_contents.first[0] = 'active' unless pane_contents.detect {|pc| pc[0] == 'active'}
         pane_contents.map do |css_class, title, content|
@@ -47,7 +49,7 @@ module BootstrapComponentsHelpers
       end
 
     end
-    
+
   end
 end
 
